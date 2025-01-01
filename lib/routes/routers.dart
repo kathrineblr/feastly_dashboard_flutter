@@ -22,7 +22,7 @@ class Routers{
     GetPage(name: StringRouts.login, page: ()=> LoginPage()),
     GetPage(name: StringRouts.dashboard, page: ()=> OverviewPage()),
     GetPage(name: StringRouts.users, page: ()=> UsersPage()),
-    GetPage(name: StringRouts.caterersDetails, page: ()=> CaterorsPage()),
+    GetPage(name: StringRouts.caterersDetails, page: ()=> CaterersPage()),
     GetPage(name: StringRouts.customers, page: ()=> CustomerPage()),
     GetPage(name: StringRouts.categories, page: ()=> CategoriesPage()),
     GetPage(name: StringRouts.subCategories, page: ()=> SubCategoryPage()),
