@@ -34,7 +34,12 @@ class MyApp extends StatelessWidget {
             isDense: true,
             isCollapsed: true,
             contentPadding: EdgeInsets.symmetric(horizontal: 8.0,vertical: 10.0)
-          )
+          ),
+          dialogTheme: const DialogTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0))
+            )
+          ),
         ),
         debugShowCheckedModeBanner: false,
         navigatorObservers: [
