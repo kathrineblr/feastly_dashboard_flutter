@@ -98,12 +98,17 @@ class ItemMasterController extends GetxController {
     update(['listOfCategory']);
   }
 
-  listOfSubCategoryApi() async {
+  listOfSubCategoryApi({bool fromUpdate = false,subCategoryCode}) async {
     var data = await SubCategoryModel().getAllSubCategoriesByCategoryCode(
         selectedCategory.value);
     if (data != null) {
       if (data['code'] == 200) {
-        selectedSubCategory.value = null;
+        if(fromUpdate == false) {
+          selectedSubCategory.value = null;
+        }
+        else{
+          selectedSubCategory.value = subCategoryCode;
+        }
         listOfSubCategory = (data['data'] as List)
             .map((e) => SubCategoryModel.fromJson(e))
             .toList();
@@ -370,7 +375,8 @@ class ItemMasterController extends GetxController {
     shortDescTxt.text = model.shortDesc!;
     longDescTxt.text = model.desc!;
     selectedCategory.value = model.category?.code;
-    selectedSubCategory.value = model.subCategory?.code;
+    listOfSubCategoryApi(fromUpdate: true,subCategoryCode: model.subCategory?.code);
+    // selectedSubCategory.value = model.subCategory?.code;
     selectedUnit.value = model.unit?.code;
     selectedBrand.value = model.brand?.code;
     ratioTxt.text = model.ratio!;
