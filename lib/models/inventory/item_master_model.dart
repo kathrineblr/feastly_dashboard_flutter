@@ -63,7 +63,7 @@ class ItemMasterModel {
     subCategory: json["sub_category"] == null ? null : SubCategoryModel.fromJson(json["sub_category"]),
     brand: json["brand"] == null ? null : BrandModel.fromJson(json["brand"]),
     unit: json["unit"] == null ? null : UnitModel.fromJson(json["unit"]),
-    ratio: json["ratio"],
+    ratio: json["ratio"].toString(),
     price: json["price"].toString(),
     discount: json["discount"].toString(),
     mrp: json["mrp"].toString(),

@@ -55,7 +55,7 @@ class ItemMasterPage extends StatelessWidget {
                                     minWidth: 2500,
                                     headingRowHeight: 30,
                                     dataRowHeight: 30,
-                                    fit: FlexFit.loose,
+                                    fit: FlexFit.tight,
                                     // pageSyncApproach: PageSyncApproach.goToFirst,
                                     onRowsPerPageChanged: (r) {
                                       logic.rowChangedPerPage(r!);
@@ -145,11 +145,12 @@ class MyAsyncDataSource extends AsyncDataTableSource {
     var alc = Get.find<ItemMasterController>();
     var model = {"limit":count,"skip":startIndex};
     var data = await ItemMasterModel().getAllItems(model);
+
     // var data = await CallHistoryModel().listOfAllCallsPagination(startIndex, count, searchValue,alc.fromDateTxtController.text.trim().isEmpty ? '' : convertFromToDate(DateTime.parse(alc.fromDateTxtController.text.trim()), 'from'),alc.toDateTxtController.text.trim().isEmpty ? '' : convertFromToDate(DateTime.parse(alc.toDateTxtController.text.trim()),'to'));
     var rows = (data!['data']['data'] as List).map((e) =>
         ItemMasterModel.fromJson(e)).toList();
+    print('-------- ${rows.length}');
     countData = data['data']['total'];
-    // debugPrint('Data Length: count $countData ');
     if (rows.isEmpty) {
       return AsyncRowsResponse(0, []);
     }
@@ -171,13 +172,13 @@ class MyAsyncDataSource extends AsyncDataTableSource {
                   DataCell(
                       Center(child: SelectableText(e.name ?? ''))),
                   DataCell(
-                      Center(child: SelectableText(e.category == null ? '' : e.category!.name ?? ''))),
+                      Center(child: SelectableText(e.category == null ? '' : e.category!.name!))),
                   DataCell(
-                      Center(child: SelectableText(e.subCategory == null ? '' : e.subCategory!.name ?? ''))),
+                      Center(child: SelectableText(e.subCategory == null ? '' : e.subCategory!.name!))),
                   DataCell(
-                      Center(child: SelectableText(e.unit == null ? '' : e.unit!.name ?? ''))),
+                      Center(child: SelectableText(e.unit == null ? '' : e.unit!.name!))),
                   DataCell(
-                      Center(child: SelectableText(e.brand == null ? '' : e.brand!.name ?? ''))),
+                      Center(child: SelectableText(e.brand == null ? '' : e.brand!.name!))),
                   DataCell(
                       Center(child: SelectableText(e.price ?? ''))),
                   DataCell(

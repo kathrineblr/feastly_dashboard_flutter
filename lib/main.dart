@@ -1,4 +1,5 @@
 import 'package:dynamic_path_url_strategy/dynamic_path_url_strategy.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overlay_kit/overlay_kit.dart';
@@ -8,7 +9,7 @@ import 'routes/router_observer.dart';
 import 'routes/routers.dart';
 import 'routes/string_routes.dart';
 
-void main() {
+void main(){
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
   runApp(const MyApp());

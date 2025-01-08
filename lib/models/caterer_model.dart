@@ -129,6 +129,10 @@ class CatererModel {
       var logData = await SharedServices.loginDetails();
        var fromData = FormData.fromMap(model);
       var data = await Dio(ApiService().options).post('/caterers/addShopImage',
+          // queryParameters: {
+          //   'name': model['name'],
+          //   'owner_phone': model['owner_phone'],
+          // },
           data: fromData,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",

@@ -35,7 +35,7 @@ class UnitPage extends StatelessWidget {
                                 border: Border.all(color: Colors.grey)
                             ),
                             child: GetBuilder<UnitController>(
-                                id: 'uni_list',
+                                id: 'unit_list',
                                 builder: (con) {
                                   return DataTable2                                                                                                    (
                                       columnSpacing: 12,

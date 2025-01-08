@@ -48,7 +48,7 @@ class CaterersPage extends StatelessWidget {
                                           horizontalMargin: 12,
                                           minWidth: 1000,
                                           headingRowHeight: 30,
-                                          dataRowHeight: 30,
+                                          dataRowHeight: 40,
                                           dataTextStyle: Get.textTheme.bodySmall!,
                                           headingRowColor: WidgetStatePropertyAll(yellowColor),
                                           headingRowDecoration: BoxDecoration(

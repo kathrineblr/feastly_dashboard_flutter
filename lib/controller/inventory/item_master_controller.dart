@@ -63,7 +63,7 @@ class ItemMasterController extends GetxController {
     // update(['listOfCalls']);
   }
 
-  initiateLists(){
+  initiateLists() {
     listOfCategoryApi();
     listOfUnitApi();
     listOfBrandApi();
@@ -77,6 +77,7 @@ class ItemMasterController extends GetxController {
     selectedCategory.value = null;
     selectedSubCategory.value = null;
     selectedUnit.value = null;
+    selectedBrand.value = null;
     ratioTxt.clear();
     priceTxt.clear();
     discountTxt.clear();
@@ -146,7 +147,9 @@ class ItemMasterController extends GetxController {
               child: SingleChildScrollView(
                 child: Column(
                     children: [
-                      HeaderWidget(title: 'Add Items',onTap: (){Get.back();},),
+                      HeaderWidget(title: 'Add Items', onTap: () {
+                        Get.back();
+                      },),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
@@ -191,7 +194,8 @@ class ItemMasterController extends GetxController {
                                     listOfSubCategoryApi();
                                   },
                                   items: listOfCategory.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Category',
@@ -204,20 +208,25 @@ class ItemMasterController extends GetxController {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedSubCategory.value,
-                                  onChanged: (val) {
-                                    selectedSubCategory.value = val;
-                                  },
-                                  items: listOfSubCategory.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Sub Category',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                );
+                              child: GetBuilder<ItemMasterController>(
+                                id: 'listOfSubCategory',
+                                  builder: (logic) {
+                                return Obx(() {
+                                  return DropdownButtonFormField<String>(
+                                    value: selectedSubCategory.value,
+                                    onChanged: (val) {
+                                      selectedSubCategory.value = val;
+                                    },
+                                    items: listOfSubCategory.map((e) =>
+                                        DropdownMenuItem(
+                                            value: e.code, child: Text(e
+                                            .name!))).toList(),
+                                    decoration: InputDecoration(
+                                      labelText: 'Sub Category',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  );
+                                });
                               }),
                             ),
                           ),
@@ -235,7 +244,8 @@ class ItemMasterController extends GetxController {
                                     selectedUnit.value = val;
                                   },
                                   items: listOfUnit.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Unit',
@@ -255,7 +265,8 @@ class ItemMasterController extends GetxController {
                                     selectedBrand.value = val;
                                   },
                                   items: listOfBrand.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Brand',
@@ -338,11 +349,11 @@ class ItemMasterController extends GetxController {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             ElevatedButton(onPressed: () {
-                              clearForm();
-                            }, child: Text('Clear')),
+                              Get.back();
+                            }, child: Text('Close')),
                             SizedBox(width: 10.0),
                             ElevatedButton(onPressed: () {
-                                addItemApi();
+                              addItemApi();
                             }, child: Text('Create'))
                           ],
                         ),
@@ -377,7 +388,9 @@ class ItemMasterController extends GetxController {
               child: SingleChildScrollView(
                 child: Column(
                     children: [
-                      HeaderWidget(title: 'Modify Items',onTap: (){Get.back();},),
+                      HeaderWidget(title: 'Modify Items', onTap: () {
+                        Get.back();
+                      },),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
@@ -422,7 +435,8 @@ class ItemMasterController extends GetxController {
                                     listOfSubCategoryApi();
                                   },
                                   items: listOfCategory.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Category',
@@ -442,7 +456,8 @@ class ItemMasterController extends GetxController {
                                     selectedSubCategory.value = val;
                                   },
                                   items: listOfSubCategory.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Sub Category',
@@ -466,7 +481,8 @@ class ItemMasterController extends GetxController {
                                     selectedUnit.value = val;
                                   },
                                   items: listOfUnit.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Unit',
@@ -486,7 +502,8 @@ class ItemMasterController extends GetxController {
                                     selectedBrand.value = val;
                                   },
                                   items: listOfBrand.map((e) =>
-                                      DropdownMenuItem(value: e.code, child: Text(e
+                                      DropdownMenuItem(
+                                          value: e.code, child: Text(e
                                           .name!))).toList(),
                                   decoration: InputDecoration(
                                     labelText: 'Brand',
@@ -640,6 +657,7 @@ class ItemMasterController extends GetxController {
         "category": selectedCategory.value,
         "sub_category": selectedSubCategory.value,
         "unit": selectedUnit.value,
+        "brand":selectedBrand.value,
         "ratio": ratioTxt.text.trim(),
         "price": priceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
@@ -652,6 +670,7 @@ class ItemMasterController extends GetxController {
         if (data['code'] == 200) {
           clearForm();
           loadProject();
+          Get.back();
           customSnack(
               title: 'Success', type: 's', msg: '${data['data']['msg']}');
         }
@@ -718,6 +737,7 @@ class ItemMasterController extends GetxController {
         "category": selectedCategory.value,
         "sub_category": selectedSubCategory.value,
         "unit": selectedUnit.value,
+        "brand":selectedBrand.value,
         "ratio": ratioTxt.text.trim(),
         "price": priceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
@@ -730,6 +750,7 @@ class ItemMasterController extends GetxController {
         if (data['code'] == 200) {
           clearForm();
           loadProject();
+          Get.back();
           customSnack(
               title: 'Success', type: 's', msg: '${data['data']['msg']}');
         }
