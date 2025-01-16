@@ -121,6 +121,40 @@ class ItemMasterModel {
     return jsonResp;
   }
 
+
+  Future<Map<String, dynamic>?> searchItemByName(name) async {
+    Map<String, dynamic>? jsonResp;
+    try {
+      var logData = await SharedServices.loginDetails();
+      var data = await Dio(ApiService().options).get('/inventory/searchItemByName',
+          queryParameters: {'name':name},
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
+          }));
+
+      if (data.statusCode == 200) {
+        jsonResp = {'code': data.statusCode, 'data': data.data};
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        if(e.response!.statusCode == 401 || e.response!.statusCode == 403){
+          authFailedFunc(msg: e.response!.data['msg']);
+        }else {
+          jsonResp = {'code': e.response!.statusCode, 'data': e.response!.data};
+        }
+      } else {
+        jsonResp = {
+          'code': 500,
+          'data': {'msg': 'Something error try again'}
+        };
+      }
+    }
+    return jsonResp;
+  }
+
+
+
   Future<Map<String, dynamic>?> addItem(model) async {
     Map<String, dynamic>? jsonResp;
     try {
