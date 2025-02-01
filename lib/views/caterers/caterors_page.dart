@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
-import '../../controller/caterer_controller.dart';
+import '../../controller/caterer/caterer_controller.dart';
 import '../../widgets/header_widget.dart';
 import '../../widgets/side_menu_items.dart';
 

@@ -29,7 +29,9 @@ class ItemMasterModel {
   BrandModel? brand;
   UnitModel? unit;
   String? ratio;
+  String? ratioValue;
   String? price;
+  String? ourPrice;
   String? discount;
   String? mrp;
   bool? itemEnable;
@@ -45,8 +47,10 @@ class ItemMasterModel {
     this.subCategory,
     this.brand,
     this.unit,
+    this.ratioValue,
     this.ratio,
     this.price,
+    this.ourPrice,
     this.discount,
     this.mrp,
     this.itemEnable,
@@ -64,7 +68,9 @@ class ItemMasterModel {
     brand: json["brand"] == null ? null : BrandModel.fromJson(json["brand"]),
     unit: json["unit"] == null ? null : UnitModel.fromJson(json["unit"]),
     ratio: json["ratio"].toString(),
+    ratioValue: json["ratio_value"] == null ? '0' : json["ratio_value"].toString(),
     price: json["price"].toString(),
+    ourPrice: json["our_price"] == null ? '0' : json["our_price"].toString(),
     discount: json["discount"].toString(),
     mrp: json["mrp"].toString(),
     itemEnable: json["item_enable"],
@@ -82,7 +88,9 @@ class ItemMasterModel {
     "brand": brand?.toJson(),
     "unit": unit?.toJson(),
     "ratio": ratio,
+    "ratio_value": ratioValue,
     "price": price,
+    "our_price": ourPrice,
     "discount": discount,
     "mrp": mrp,
     "item_enable": itemEnable,

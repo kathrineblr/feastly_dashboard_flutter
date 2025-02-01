@@ -10,9 +10,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:overlay_kit/overlay_kit.dart';
 
-import '../widgets/custom_snackbar.dart';
-import '../widgets/header_widget.dart';
-import '../widgets/loading_progress.dart';
+import '../../widgets/custom_snackbar.dart';
+import '../../widgets/header_widget.dart';
+import '../../widgets/loading_progress.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
@@ -436,7 +436,7 @@ class CatererController extends GetxController {
     shopImage.value =
     model.shopImage == null ? null : await fetchImageBytesFromUrl(
         model.shopImage!);
-    var data = await CatererItemModel().getAllCategories(model.code);
+    var data = await CatererItemModel().getAllItemsByCaterer(model.code);
     if(data != null){
       if(data['code'] == 200){
         listOfAddItems = (data['data'] as List)

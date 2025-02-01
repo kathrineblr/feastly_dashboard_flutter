@@ -1,18 +1,23 @@
 import 'package:data_table_2/data_table_2.dart';
-import 'package:feastly_dashboard/models/inventory/brand_model.dart';
-import 'package:feastly_dashboard/models/inventory/category_model.dart';
-import 'package:feastly_dashboard/models/inventory/item_master_model.dart';
-import 'package:feastly_dashboard/models/inventory/sub_category_model.dart';
-import 'package:feastly_dashboard/models/inventory/unit_model.dart';
-import 'package:feastly_dashboard/widgets/custom_snackbar.dart';
+import 'package:feastly_dashboard/models/caterer_item_model.dart';
+import 'package:feastly_dashboard/models/caterer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overlay_kit/overlay_kit.dart';
 
+import '../../models/inventory/brand_model.dart';
+import '../../models/inventory/category_model.dart';
+import '../../models/inventory/sub_category_model.dart';
+import '../../models/inventory/unit_model.dart';
+import '../../widgets/custom_snackbar.dart';
 import '../../widgets/header_widget.dart';
 import '../../widgets/loading_progress.dart';
 
-class ItemMasterController extends GetxController {
+
+class CatererItemController extends GetxController{
+
+
+  var selectedCaterer = Rxn<CatererModel>();
 
   var itemNameTxt = TextEditingController();
   var shortDescTxt = TextEditingController();
@@ -53,6 +58,7 @@ class ItemMasterController extends GetxController {
     DataColumn2(label: Text('Action'), size: ColumnSize.S),
   ];
 
+
   loadProject() async {
     update(['listOfItems']);
   }
@@ -70,7 +76,6 @@ class ItemMasterController extends GetxController {
     listOfUnitApi();
     listOfBrandApi();
   }
-
 
   clearForm() {
     itemNameTxt.clear();
@@ -217,26 +222,26 @@ class ItemMasterController extends GetxController {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: GetBuilder<ItemMasterController>(
-                                id: 'listOfSubCategory',
+                              child: GetBuilder<CatererItemController>(
+                                  id: 'listOfSubCategory',
                                   builder: (logic) {
-                                return Obx(() {
-                                  return DropdownButtonFormField<String>(
-                                    value: selectedSubCategory.value,
-                                    onChanged: (val) {
-                                      selectedSubCategory.value = val;
-                                    },
-                                    items: listOfSubCategory.map((e) =>
-                                        DropdownMenuItem(
-                                            value: e.code, child: Text(e
-                                            .name!))).toList(),
-                                    decoration: InputDecoration(
-                                      labelText: 'Sub Category',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  );
-                                });
-                              }),
+                                    return Obx(() {
+                                      return DropdownButtonFormField<String>(
+                                        value: selectedSubCategory.value,
+                                        onChanged: (val) {
+                                          selectedSubCategory.value = val;
+                                        },
+                                        items: listOfSubCategory.map((e) =>
+                                            DropdownMenuItem(
+                                                value: e.code, child: Text(e
+                                                .name!))).toList(),
+                                        decoration: InputDecoration(
+                                          labelText: 'Sub Category',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      );
+                                    });
+                                  }),
                             ),
                           ),
                         ],
@@ -331,17 +336,17 @@ class ItemMasterController extends GetxController {
                                 )),
                           ),
 
-                          Expanded(
-                            child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextField(
-                                  controller: ourPriceTxt,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Our Price',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                )),
-                          ),
+                          // Expanded(
+                          //   child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: TextField(
+                          //         controller: ourPriceTxt,
+                          //         decoration: const InputDecoration(
+                          //           labelText: 'Our Price',
+                          //           border: OutlineInputBorder(),
+                          //         ),
+                          //       )),
+                          // ),
                         ],
                       ),
                       Row(
@@ -406,7 +411,7 @@ class ItemMasterController extends GetxController {
         )));
   }
 
-  updateOpenItemDialog({required ItemMasterModel model}) {
+  updateOpenItemDialog({required CatererItemModel model}) {
     itemNameTxt.text = model.name!;
     shortDescTxt.text = model.shortDesc!;
     longDescTxt.text = model.desc!;
@@ -603,17 +608,17 @@ class ItemMasterController extends GetxController {
                                 )),
                           ),
 
-                          Expanded(
-                            child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextField(
-                                  controller: ourPriceTxt,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Our Price',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                )),
-                          ),
+                          // Expanded(
+                          //   child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: TextField(
+                          //         controller: ourPriceTxt,
+                          //         decoration: const InputDecoration(
+                          //           labelText: 'Our Price',
+                          //           border: OutlineInputBorder(),
+                          //         ),
+                          //       )),
+                          // ),
                         ],
                       ),
                       Row(
@@ -708,6 +713,9 @@ class ItemMasterController extends GetxController {
         .isEmpty) {
       customSnack(title: "Error", type: 'e', msg: 'Enter Ratio');
     }
+    else if(ratioValueTxt.text.trim().isEmpty){
+      customSnack(title: "Error", type: 'e', msg: 'Enter Ratio Value');
+    }
     else if (priceTxt.text
         .trim()
         .isEmpty) {
@@ -727,6 +735,7 @@ class ItemMasterController extends GetxController {
       OverlayLoadingProgress.start(
           barrierDismissible: true, widget: const CustomLoadingProgress());
       var model = {
+        "caterer_code":selectedCaterer.value!.code,
         "name": itemNameTxt.text.trim(),
         "short_desc": shortDescTxt.text.trim(),
         "desc": longDescTxt.text.trim(),
@@ -742,7 +751,7 @@ class ItemMasterController extends GetxController {
         "mrp": mrpTxt.text.trim(),
         "item_enable": enableItems.value,
       };
-      var data = await ItemMasterModel().addItem(model);
+      var data = await CatererItemModel().addItemByCaterer(model);
       OverlayLoadingProgress.stop();
       if (data != null) {
         if (data['code'] == 200) {
@@ -789,6 +798,9 @@ class ItemMasterController extends GetxController {
         .isEmpty) {
       customSnack(title: "Error", type: 'e', msg: 'Enter Ratio');
     }
+    else if(ratioValueTxt.text.trim().isEmpty){
+      customSnack(title: "Error", type: 'e', msg: 'Enter Ratio Value');
+    }
     else if (priceTxt.text
         .trim()
         .isEmpty) {
@@ -804,13 +816,11 @@ class ItemMasterController extends GetxController {
         .isEmpty) {
       customSnack(title: "Error", type: 'e', msg: 'Enter MRP');
     }
-    else if(ratioValueTxt.text.trim().isEmpty){
-      customSnack(title: "Error", type: 'e', msg: 'Enter Ratio Value');
-    }
     else {
       OverlayLoadingProgress.start(
           barrierDismissible: true, widget: const CustomLoadingProgress());
       var model = {
+        "caterer_code":selectedCaterer.value!.code,
         "code": itemCode,
         "name": itemNameTxt.text.trim(),
         "short_desc": shortDescTxt.text.trim(),
@@ -827,7 +837,7 @@ class ItemMasterController extends GetxController {
         "mrp": mrpTxt.text.trim(),
         "item_enable": enableItems.value,
       };
-      var data = await ItemMasterModel().updateItem(model);
+      var data = await CatererItemModel().updateItemByCaterer(model);
       OverlayLoadingProgress.stop();
       if (data != null) {
         if (data['code'] == 200) {
@@ -844,4 +854,14 @@ class ItemMasterController extends GetxController {
     }
   }
 
-}
+ Future<List<CatererModel>> getAllCaterers(name) async {
+   List<CatererModel> catererList = [];
+    var response = await CatererModel().listOfCatererBySearchName(name);
+    if(response != null){
+      if(response['code'] == 200){
+        catererList = (response['data'] as List).map((e) => CatererModel.fromJson(e)).toList();
+      }
+    }
+    return catererList;
+    }
+  }

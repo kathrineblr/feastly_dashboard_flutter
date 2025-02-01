@@ -15,6 +15,7 @@ class StringRouts{
   static String brands = '/brands';
   static String itemMasters = '/items';
   static String caterersDetails = '/caterers';
+  static String caterersItems = '/caterers-items';
   static String orders = '/orders';
   static String settings = '/settings';
 
@@ -23,6 +24,7 @@ class StringRouts{
     SideMenuModel(name: dashboard, value: 'Dashboard', icon: const Icon(Icons.dashboard_outlined)),
     SideMenuModel(name: users, value: 'Users', icon: const Icon(Icons.person_2_outlined)),
     SideMenuModel(name: caterersDetails, value: 'Caterers', icon: const Icon(Icons.coffee_outlined)),
+    SideMenuModel(name: caterersItems, value: "Caterer Items", icon: const Icon(Icons.list_alt_outlined)),
     SideMenuModel(name: customers, value: 'Customers', icon: const Icon(Icons.people_outline)),
     SideMenuModel(name: categories, value: 'Categories', icon: const Icon(Icons.category_outlined)),
     SideMenuModel(name: subCategories, value: 'Sub Categories', icon: const Icon(Icons.category_outlined)),

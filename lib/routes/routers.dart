@@ -1,6 +1,7 @@
 
 import 'package:feastly_dashboard/views/brands/brands_page.dart';
 import 'package:feastly_dashboard/views/categories/categories_page.dart';
+import 'package:feastly_dashboard/views/caterers/caterer_item_master_page.dart';
 import 'package:feastly_dashboard/views/caterers/caterors_page.dart';
 import 'package:feastly_dashboard/views/item_masters/item_master_page.dart';
 import 'package:feastly_dashboard/views/orders/orders_page.dart';
@@ -23,6 +24,7 @@ class Routers{
     GetPage(name: StringRouts.dashboard, page: ()=> OverviewPage()),
     GetPage(name: StringRouts.users, page: ()=> UsersPage()),
     GetPage(name: StringRouts.caterersDetails, page: ()=> CaterersPage()),
+    GetPage(name: StringRouts.caterersItems, page: ()=>CatererItemMasterPage()),
     GetPage(name: StringRouts.customers, page: ()=> CustomerPage()),
     GetPage(name: StringRouts.categories, page: ()=> CategoriesPage()),
     GetPage(name: StringRouts.subCategories, page: ()=> SubCategoryPage()),
