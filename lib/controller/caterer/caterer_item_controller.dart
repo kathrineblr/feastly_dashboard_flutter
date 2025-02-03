@@ -41,6 +41,7 @@ class CatererItemController extends GetxController{
   var discountTxt = TextEditingController();
   var mrpTxt = TextEditingController();
   var ourPriceTxt = TextEditingController();
+  var cookingTimeTxt = TextEditingController();
   var enableItems = true.obs;
 
   var columList = const [
@@ -377,6 +378,23 @@ class CatererItemController extends GetxController{
                           ),
                         ],
                       ),
+                      Row(
+                        children: [
+
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: cookingTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Cooking Time (In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+
+                        ],
+                      ),
                       Padding(padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
@@ -427,6 +445,7 @@ class CatererItemController extends GetxController{
     discountTxt.text = model.discount!;
     mrpTxt.text = model.mrp!;
     enableItems.value = model.itemEnable!;
+    cookingTimeTxt.text = model.cookingTime.toString();
 
     Get.dialog(Dialog(
         child: Container(
@@ -649,6 +668,23 @@ class CatererItemController extends GetxController{
                           ),
                         ],
                       ),
+                      Row(
+                        children: [
+
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: cookingTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Cooking Time (In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+
+                        ],
+                      ),
                       Padding(padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
@@ -748,6 +784,8 @@ class CatererItemController extends GetxController{
         "price": priceTxt.text.trim(),
         "our_price": ourPriceTxt.text.trim().isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
+        "cooking_time": cookingTimeTxt.text.trim().isEmpty ? '0' : cookingTimeTxt.text.trim(),
+        "extra_time": 1,
         "mrp": mrpTxt.text.trim(),
         "item_enable": enableItems.value,
       };
@@ -835,6 +873,7 @@ class CatererItemController extends GetxController{
         "our_price": ourPriceTxt.text.trim().isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "cooking_time": cookingTimeTxt.text.trim().isEmpty ? '0' : cookingTimeTxt.text.trim(),
         "item_enable": enableItems.value,
       };
       var data = await CatererItemModel().updateItemByCaterer(model);

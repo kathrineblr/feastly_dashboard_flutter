@@ -36,6 +36,8 @@ class CatererItemModel {
   String? discount;
   String? mrp;
   bool? itemEnable;
+  double? cookingTime;
+  double? extraTime;
   String? createdUser;
   String? createdTime;
 
@@ -56,6 +58,8 @@ class CatererItemModel {
     this.discount,
     this.mrp,
     this.itemEnable,
+    this.cookingTime,
+    this.extraTime,
     this.createdUser,
     this.createdTime,
   });
@@ -77,6 +81,8 @@ class CatererItemModel {
     discount: json["discount"].toString(),
     mrp: json["mrp"].toString(),
     itemEnable: json["item_enable"],
+    cookingTime: json["cooking_time"] ?? 0,
+    extraTime: json["extra_time"] ?? 0,
     createdUser: json["created_user"],
     createdTime: json["created_time"],
   );
@@ -98,6 +104,8 @@ class CatererItemModel {
     "discount": discount,
     "mrp": mrp,
     "item_enable": itemEnable,
+    "cooking_time": cookingTime,
+    "extra_time": extraTime,
     "created_user": createdUser,
     "created_time": createdTime,
   };

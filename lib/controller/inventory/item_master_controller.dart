@@ -4,6 +4,14 @@ import 'package:feastly_dashboard/models/inventory/category_model.dart';
 import 'package:feastly_dashboard/models/inventory/item_master_model.dart';
 import 'package:feastly_dashboard/models/inventory/sub_category_model.dart';
 import 'package:feastly_dashboard/models/inventory/unit_model.dart';
+import 'package:feastly_dashboard/views/brands/brand_form_page.dart';
+import 'package:feastly_dashboard/views/brands/brands_page.dart';
+import 'package:feastly_dashboard/views/categories/categories_page.dart';
+import 'package:feastly_dashboard/views/categories/category_form_page.dart';
+import 'package:feastly_dashboard/views/sub_category/sub_category_form_page.dart';
+import 'package:feastly_dashboard/views/sub_category/sub_category_page.dart';
+import 'package:feastly_dashboard/views/unit/unit_form_page.dart';
+import 'package:feastly_dashboard/views/unit/unit_page.dart';
 import 'package:feastly_dashboard/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,6 +44,8 @@ class ItemMasterController extends GetxController {
   var discountTxt = TextEditingController();
   var mrpTxt = TextEditingController();
   var ourPriceTxt = TextEditingController();
+  var cookingTimeTxt = TextEditingController();
+  var extraTimeTxt = TextEditingController();
   var enableItems = true.obs;
 
   var columList = const [
@@ -86,8 +96,9 @@ class ItemMasterController extends GetxController {
     mrpTxt.clear();
     ratioValueTxt.clear();
     ourPriceTxt.clear();
+    cookingTimeTxt.clear();
+    extraTimeTxt.clear();
     enableItems.value = true;
-    update(['listOfItems']);
   }
 
   listOfCategoryApi() async {
@@ -102,15 +113,15 @@ class ItemMasterController extends GetxController {
     update(['listOfCategory']);
   }
 
-  listOfSubCategoryApi({bool fromUpdate = false,subCategoryCode}) async {
+  listOfSubCategoryApi({bool fromUpdate = false, subCategoryCode}) async {
     var data = await SubCategoryModel().getAllSubCategoriesByCategoryCode(
         selectedCategory.value);
     if (data != null) {
       if (data['code'] == 200) {
-        if(fromUpdate == false) {
+        if (fromUpdate == false) {
           selectedSubCategory.value = null;
         }
-        else{
+        else {
           selectedSubCategory.value = subCategoryCode;
         }
         listOfSubCategory = (data['data'] as List)
@@ -193,50 +204,64 @@ class ItemMasterController extends GetxController {
                       Row(
                         children: [
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedCategory.value,
-                                  onChanged: (val) {
-                                    selectedCategory.value = val;
-                                    listOfSubCategoryApi();
-                                  },
-                                  items: listOfCategory.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Category',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                );
-                              }),
-                            ),
+                            child: GetBuilder<ItemMasterController>(
+                                id: 'listOfCategory',
+                                builder: (logic) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Obx(() {
+                                  return GestureDetector(
+                                    onDoubleTap: () {
+                                      openCategoryDialog();
+                                    },
+                                    child: DropdownButtonFormField<String>(
+                                      value: selectedCategory.value,
+                                      onChanged: (val) {
+                                        selectedCategory.value = val;
+                                        listOfSubCategoryApi();
+                                      },
+                                      items: listOfCategory.map((e) =>
+                                          DropdownMenuItem(
+                                              value: e.code, child: Text(e
+                                              .name!))).toList(),
+                                      decoration: const InputDecoration(
+                                        labelText: 'Category',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              );
+                            }),
                           ),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: GetBuilder<ItemMasterController>(
-                                id: 'listOfSubCategory',
+                                  id: 'listOfSubCategory',
                                   builder: (logic) {
-                                return Obx(() {
-                                  return DropdownButtonFormField<String>(
-                                    value: selectedSubCategory.value,
-                                    onChanged: (val) {
-                                      selectedSubCategory.value = val;
-                                    },
-                                    items: listOfSubCategory.map((e) =>
-                                        DropdownMenuItem(
-                                            value: e.code, child: Text(e
-                                            .name!))).toList(),
-                                    decoration: InputDecoration(
-                                      labelText: 'Sub Category',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  );
-                                });
-                              }),
+                                    return Obx(() {
+                                      return GestureDetector(
+                                        onDoubleTap: () {
+                                          openSubCategoryDialog();
+                                        },
+                                        child: DropdownButtonFormField<String>(
+                                          value: selectedSubCategory.value,
+                                          onChanged: (val) {
+                                            selectedSubCategory.value = val;
+                                          },
+                                          items: listOfSubCategory.map((e) =>
+                                              DropdownMenuItem(
+                                                  value: e.code, child: Text(e
+                                                  .name!))).toList(),
+                                          decoration: const InputDecoration(
+                                            labelText: 'Sub Category',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      );
+                                    });
+                                  }),
                             ),
                           ),
                         ],
@@ -244,46 +269,64 @@ class ItemMasterController extends GetxController {
                       Row(
                         children: [
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedUnit.value,
-                                  onChanged: (val) {
-                                    selectedUnit.value = val;
-                                  },
-                                  items: listOfUnit.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Unit',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                );
-                              }),
-                            ),
+                            child: GetBuilder<ItemMasterController>(
+                                id: 'listOfUnit',
+                                builder: (logic) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Obx(() {
+                                      return GestureDetector(
+                                        onDoubleTap: () {
+                                          openUnitDialog();
+                                        },
+                                        child: DropdownButtonFormField<String>(
+                                          value: selectedUnit.value,
+                                          onChanged: (val) {
+                                            selectedUnit.value = val;
+                                          },
+                                          items: listOfUnit.map((e) =>
+                                              DropdownMenuItem(
+                                                  value: e.code, child: Text(e
+                                                  .name!))).toList(),
+                                          decoration: const InputDecoration(
+                                            labelText: 'Unit',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  );
+                                }),
                           ),
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedBrand.value,
-                                  onChanged: (val) {
-                                    selectedBrand.value = val;
-                                  },
-                                  items: listOfBrand.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Brand',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                );
-                              }),
-                            ),
+                            child: GetBuilder<ItemMasterController>(
+                                id: 'listOfBrand',
+                                builder: (logic) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Obx(() {
+                                      return GestureDetector(
+                                        onDoubleTap: () {
+                                          openBrandDialog();
+                                        },
+                                        child: DropdownButtonFormField<String>(
+                                          value: selectedBrand.value,
+                                          onChanged: (val) {
+                                            selectedBrand.value = val;
+                                          },
+                                          items: listOfBrand.map((e) =>
+                                              DropdownMenuItem(
+                                                  value: e.code, child: Text(e
+                                                  .name!))).toList(),
+                                          decoration: const InputDecoration(
+                                            labelText: 'Brand',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  );
+                                }),
                           ),
                         ],
                       ),
@@ -372,6 +415,34 @@ class ItemMasterController extends GetxController {
                           ),
                         ],
                       ),
+                      Row(
+                        children: [
+
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: cookingTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Cooking Time (In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: extraTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Extra Time(In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
                       Padding(padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
@@ -411,7 +482,8 @@ class ItemMasterController extends GetxController {
     shortDescTxt.text = model.shortDesc!;
     longDescTxt.text = model.desc!;
     selectedCategory.value = model.category?.code;
-    listOfSubCategoryApi(fromUpdate: true,subCategoryCode: model.subCategory?.code);
+    listOfSubCategoryApi(
+        fromUpdate: true, subCategoryCode: model.subCategory?.code);
     // selectedSubCategory.value = model.subCategory?.code;
     selectedUnit.value = model.unit?.code;
     selectedBrand.value = model.brand?.code;
@@ -422,6 +494,8 @@ class ItemMasterController extends GetxController {
     discountTxt.text = model.discount!;
     mrpTxt.text = model.mrp!;
     enableItems.value = model.itemEnable!;
+    cookingTimeTxt.text = model.cookingTime.toString();
+    extraTimeTxt.text = model.extraTime.toString();
 
     Get.dialog(Dialog(
         child: Container(
@@ -472,19 +546,24 @@ class ItemMasterController extends GetxController {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedCategory.value,
-                                  onChanged: (val) {
-                                    selectedCategory.value = val;
-                                    listOfSubCategoryApi();
+                                return GestureDetector(
+                                  onDoubleTap: () {
+                                    openCategoryDialog();
                                   },
-                                  items: listOfCategory.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Category',
-                                    border: OutlineInputBorder(),
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedCategory.value,
+                                    onChanged: (val) {
+                                      selectedCategory.value = val;
+                                      listOfSubCategoryApi();
+                                    },
+                                    items: listOfCategory.map((e) =>
+                                        DropdownMenuItem(
+                                            value: e.code, child: Text(e
+                                            .name!))).toList(),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Category',
+                                      border: OutlineInputBorder(),
+                                    ),
                                   ),
                                 );
                               }),
@@ -494,18 +573,23 @@ class ItemMasterController extends GetxController {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedSubCategory.value,
-                                  onChanged: (val) {
-                                    selectedSubCategory.value = val;
+                                return GestureDetector(
+                                  onDoubleTap: () {
+                                    openSubCategoryDialog();
                                   },
-                                  items: listOfSubCategory.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Sub Category',
-                                    border: OutlineInputBorder(),
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedSubCategory.value,
+                                    onChanged: (val) {
+                                      selectedSubCategory.value = val;
+                                    },
+                                    items: listOfSubCategory.map((e) =>
+                                        DropdownMenuItem(
+                                            value: e.code, child: Text(e
+                                            .name!))).toList(),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Sub Category',
+                                      border: OutlineInputBorder(),
+                                    ),
                                   ),
                                 );
                               }),
@@ -519,18 +603,23 @@ class ItemMasterController extends GetxController {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedUnit.value,
-                                  onChanged: (val) {
-                                    selectedUnit.value = val;
+                                return GestureDetector(
+                                  onDoubleTap: () {
+                                    openUnitDialog();
                                   },
-                                  items: listOfUnit.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Unit',
-                                    border: OutlineInputBorder(),
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedUnit.value,
+                                    onChanged: (val) {
+                                      selectedUnit.value = val;
+                                    },
+                                    items: listOfUnit.map((e) =>
+                                        DropdownMenuItem(
+                                            value: e.code, child: Text(e
+                                            .name!))).toList(),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Unit',
+                                      border: OutlineInputBorder(),
+                                    ),
                                   ),
                                 );
                               }),
@@ -540,18 +629,23 @@ class ItemMasterController extends GetxController {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: selectedBrand.value,
-                                  onChanged: (val) {
-                                    selectedBrand.value = val;
+                                return GestureDetector(
+                                  onDoubleTap: () {
+                                    openBrandDialog();
                                   },
-                                  items: listOfBrand.map((e) =>
-                                      DropdownMenuItem(
-                                          value: e.code, child: Text(e
-                                          .name!))).toList(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Brand',
-                                    border: OutlineInputBorder(),
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedBrand.value,
+                                    onChanged: (val) {
+                                      selectedBrand.value = val;
+                                    },
+                                    items: listOfBrand.map((e) =>
+                                        DropdownMenuItem(
+                                            value: e.code, child: Text(e
+                                            .name!))).toList(),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Brand',
+                                      border: OutlineInputBorder(),
+                                    ),
                                   ),
                                 );
                               }),
@@ -638,6 +732,34 @@ class ItemMasterController extends GetxController {
                                   controller: mrpTxt,
                                   decoration: const InputDecoration(
                                     labelText: 'MRP',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: cookingTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Cooking Time (In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: extraTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Extra Time(In Hours)',
                                     border: OutlineInputBorder(),
                                   ),
                                 )),
@@ -733,13 +855,23 @@ class ItemMasterController extends GetxController {
         "category": selectedCategory.value,
         "sub_category": selectedSubCategory.value,
         "unit": selectedUnit.value,
-        "brand":selectedBrand.value,
+        "brand": selectedBrand.value,
         "ratio": ratioTxt.text.trim(),
-        "ratio_value": ratioValueTxt.text.trim().isEmpty ? '0' : ratioValueTxt.text.trim(),
+        "ratio_value": ratioValueTxt.text
+            .trim()
+            .isEmpty ? '0' : ratioValueTxt.text.trim(),
         "price": priceTxt.text.trim(),
-        "our_price": ourPriceTxt.text.trim().isEmpty ? '0' : ourPriceTxt.text.trim(),
+        "our_price": ourPriceTxt.text
+            .trim()
+            .isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "cooking_time": cookingTimeTxt.text
+            .trim()
+            .isEmpty ? '0' : cookingTimeTxt.text.trim(),
+        "extra_time": extraTimeTxt.text
+            .trim()
+            .isEmpty ? '0' : extraTimeTxt.text.trim(),
         "item_enable": enableItems.value,
       };
       var data = await ItemMasterModel().addItem(model);
@@ -804,7 +936,9 @@ class ItemMasterController extends GetxController {
         .isEmpty) {
       customSnack(title: "Error", type: 'e', msg: 'Enter MRP');
     }
-    else if(ratioValueTxt.text.trim().isEmpty){
+    else if (ratioValueTxt.text
+        .trim()
+        .isEmpty) {
       customSnack(title: "Error", type: 'e', msg: 'Enter Ratio Value');
     }
     else {
@@ -818,13 +952,23 @@ class ItemMasterController extends GetxController {
         "category": selectedCategory.value,
         "sub_category": selectedSubCategory.value,
         "unit": selectedUnit.value,
-        "brand":selectedBrand.value,
+        "brand": selectedBrand.value,
         "ratio": ratioTxt.text.trim(),
-        "ratio_value": ratioValueTxt.text.trim().isEmpty ? '0' : ratioValueTxt.text.trim(),
+        "ratio_value": ratioValueTxt.text
+            .trim()
+            .isEmpty ? '0' : ratioValueTxt.text.trim(),
         "price": priceTxt.text.trim(),
-        "our_price": ourPriceTxt.text.trim().isEmpty ? '0' : ourPriceTxt.text.trim(),
+        "our_price": ourPriceTxt.text
+            .trim()
+            .isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "cooking_time": cookingTimeTxt.text
+            .trim()
+            .isEmpty ? '0' : cookingTimeTxt.text.trim(),
+        "extra_time": extraTimeTxt.text
+            .trim()
+            .isEmpty ? '0' : extraTimeTxt.text.trim(),
         "item_enable": enableItems.value,
       };
       var data = await ItemMasterModel().updateItem(model);
@@ -842,6 +986,66 @@ class ItemMasterController extends GetxController {
         }
       }
     }
+  }
+
+  openCategoryDialog() {
+    Get.dialog(Dialog(
+      child: Column(
+        children: [
+          HeaderWidget(title: 'Category', onTap: () {
+            Get.back();
+          },),
+          Expanded(child: CategoryFormPage()),
+        ],
+      ),
+    )).then((val) {
+      listOfCategoryApi();
+    });
+  }
+
+  openSubCategoryDialog() {
+    Get.dialog(Dialog(
+      child: Column(
+        children: [
+          HeaderWidget(title: 'Sub Category', onTap: () {
+            Get.back();
+          },),
+          Expanded(child: SubCategoryFormPage()),
+        ],
+      ),
+    )).then((val) {
+      listOfSubCategoryApi();
+    });
+  }
+
+  openBrandDialog() {
+    Get.dialog(Dialog(
+      child: Column(
+        children: [
+          HeaderWidget(title: 'Brand', onTap: () {
+            Get.back();
+          },),
+          Expanded(child: BrandFormPage()),
+        ],
+      ),
+    )).then((val) {
+      listOfBrandApi();
+    });
+  }
+
+  openUnitDialog() {
+    Get.dialog(Dialog(
+      child: Column(
+        children: [
+          HeaderWidget(title: 'Unit', onTap: () {
+            Get.back();
+          },),
+          Expanded(child: UnitFormPage()),
+        ],
+      ),
+    )).then((val) {
+      listOfUnitApi();
+    });
   }
 
 }
