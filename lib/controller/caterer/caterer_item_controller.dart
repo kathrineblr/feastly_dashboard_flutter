@@ -42,6 +42,7 @@ class CatererItemController extends GetxController{
   var mrpTxt = TextEditingController();
   var ourPriceTxt = TextEditingController();
   var cookingTimeTxt = TextEditingController();
+  var extraTimeTxt = TextEditingController();
   var enableItems = true.obs;
 
   var columList = const [
@@ -169,7 +170,7 @@ class CatererItemController extends GetxController{
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
                           controller: itemNameTxt,
-                          decoration: InputDecoration(
+                          decoration:const InputDecoration(
                             labelText: 'Item Name',
                             border: OutlineInputBorder(),
                           ),
@@ -179,7 +180,7 @@ class CatererItemController extends GetxController{
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
                           controller: shortDescTxt,
-                          decoration: InputDecoration(
+                          decoration:const InputDecoration(
                             labelText: 'Short Description',
                             border: OutlineInputBorder(),
                           ),
@@ -190,7 +191,7 @@ class CatererItemController extends GetxController{
                         child: TextField(
                           controller: longDescTxt,
                           maxLines: 5,
-                          decoration: InputDecoration(
+                          decoration:const InputDecoration(
                             labelText: 'Long Description',
                             border: OutlineInputBorder(),
                           ),
@@ -212,7 +213,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration:const InputDecoration(
                                     labelText: 'Category',
                                     border: OutlineInputBorder(),
                                   ),
@@ -236,7 +237,7 @@ class CatererItemController extends GetxController{
                                             DropdownMenuItem(
                                                 value: e.code, child: Text(e
                                                 .name!))).toList(),
-                                        decoration: InputDecoration(
+                                        decoration:const InputDecoration(
                                           labelText: 'Sub Category',
                                           border: OutlineInputBorder(),
                                         ),
@@ -262,7 +263,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Unit',
                                     border: OutlineInputBorder(),
                                   ),
@@ -283,7 +284,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Brand',
                                     border: OutlineInputBorder(),
                                   ),
@@ -302,7 +303,7 @@ class CatererItemController extends GetxController{
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
                                   controller: ratioValueTxt,
-                                  decoration: InputDecoration(
+                                  decoration:const InputDecoration(
                                     labelText: 'Ratio Value',
                                     border: OutlineInputBorder(),
                                   ),
@@ -314,7 +315,7 @@ class CatererItemController extends GetxController{
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
                                   controller: ratioTxt,
-                                  decoration: InputDecoration(
+                                  decoration:const InputDecoration(
                                     labelText: 'Ratio',
                                     border: OutlineInputBorder(),
                                   ),
@@ -337,17 +338,17 @@ class CatererItemController extends GetxController{
                                 )),
                           ),
 
-                          // Expanded(
-                          //   child: Padding(
-                          //       padding: const EdgeInsets.all(8.0),
-                          //       child: TextField(
-                          //         controller: ourPriceTxt,
-                          //         decoration: const InputDecoration(
-                          //           labelText: 'Our Price',
-                          //           border: OutlineInputBorder(),
-                          //         ),
-                          //       )),
-                          // ),
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: ourPriceTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Our Price',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
                         ],
                       ),
                       Row(
@@ -393,6 +394,18 @@ class CatererItemController extends GetxController{
                                 )),
                           ),
 
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: extraTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Extra Time (In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+
                         ],
                       ),
                       Padding(padding: const EdgeInsets.all(8.0),
@@ -415,7 +428,7 @@ class CatererItemController extends GetxController{
                             ElevatedButton(onPressed: () {
                               Get.back();
                             }, child: Text('Close')),
-                            SizedBox(width: 10.0),
+                            const SizedBox(width: 10.0),
                             ElevatedButton(onPressed: () {
                               addItemApi();
                             }, child: Text('Create'))
@@ -446,6 +459,7 @@ class CatererItemController extends GetxController{
     mrpTxt.text = model.mrp!;
     enableItems.value = model.itemEnable!;
     cookingTimeTxt.text = model.cookingTime.toString();
+    extraTimeTxt.text = model.extraTime.toString();
 
     Get.dialog(Dialog(
         child: Container(
@@ -463,7 +477,7 @@ class CatererItemController extends GetxController{
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
                           controller: itemNameTxt,
-                          decoration: InputDecoration(
+                          decoration:const InputDecoration(
                             labelText: 'Item Name',
                             border: OutlineInputBorder(),
                           ),
@@ -473,7 +487,7 @@ class CatererItemController extends GetxController{
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
                           controller: shortDescTxt,
-                          decoration: InputDecoration(
+                          decoration:const InputDecoration(
                             labelText: 'Short Description',
                             border: OutlineInputBorder(),
                           ),
@@ -484,7 +498,7 @@ class CatererItemController extends GetxController{
                         child: TextField(
                           controller: longDescTxt,
                           maxLines: 5,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Long Description',
                             border: OutlineInputBorder(),
                           ),
@@ -506,7 +520,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Category',
                                     border: OutlineInputBorder(),
                                   ),
@@ -527,7 +541,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Sub Category',
                                     border: OutlineInputBorder(),
                                   ),
@@ -552,7 +566,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Unit',
                                     border: OutlineInputBorder(),
                                   ),
@@ -573,7 +587,7 @@ class CatererItemController extends GetxController{
                                       DropdownMenuItem(
                                           value: e.code, child: Text(e
                                           .name!))).toList(),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Brand',
                                     border: OutlineInputBorder(),
                                   ),
@@ -592,7 +606,7 @@ class CatererItemController extends GetxController{
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
                                   controller: ratioValueTxt,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Ratio Value',
                                     border: OutlineInputBorder(),
                                   ),
@@ -604,7 +618,7 @@ class CatererItemController extends GetxController{
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
                                   controller: ratioTxt,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     labelText: 'Ratio',
                                     border: OutlineInputBorder(),
                                   ),
@@ -627,17 +641,17 @@ class CatererItemController extends GetxController{
                                 )),
                           ),
 
-                          // Expanded(
-                          //   child: Padding(
-                          //       padding: const EdgeInsets.all(8.0),
-                          //       child: TextField(
-                          //         controller: ourPriceTxt,
-                          //         decoration: const InputDecoration(
-                          //           labelText: 'Our Price',
-                          //           border: OutlineInputBorder(),
-                          //         ),
-                          //       )),
-                          // ),
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: ourPriceTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Our Price',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
                         ],
                       ),
                       Row(
@@ -678,6 +692,17 @@ class CatererItemController extends GetxController{
                                   controller: cookingTimeTxt,
                                   decoration: const InputDecoration(
                                     labelText: 'Cooking Time (In Hours)',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                )),
+                          ),
+                          Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: extraTimeTxt,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Extra Time (In Hours)',
                                     border: OutlineInputBorder(),
                                   ),
                                 )),
@@ -785,7 +810,7 @@ class CatererItemController extends GetxController{
         "our_price": ourPriceTxt.text.trim().isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "cooking_time": cookingTimeTxt.text.trim().isEmpty ? '0' : cookingTimeTxt.text.trim(),
-        "extra_time": 1,
+        "extra_time": extraTimeTxt.text.trim().isEmpty ? '1' : extraTimeTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
         "item_enable": enableItems.value,
       };
@@ -874,6 +899,7 @@ class CatererItemController extends GetxController{
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
         "cooking_time": cookingTimeTxt.text.trim().isEmpty ? '0' : cookingTimeTxt.text.trim(),
+        "extra_time": extraTimeTxt.text.trim().isEmpty ? '1' : extraTimeTxt.text.trim(),
         "item_enable": enableItems.value,
       };
       var data = await CatererItemModel().updateItemByCaterer(model);
