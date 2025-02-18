@@ -1,25 +1,26 @@
 // To parse this JSON data, do
 //
-//     final itemMasterModel = itemMasterModelFromJson(jsonString);
+//     final catererItemModel = catererItemModelFromJson(jsonString);
 
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:feastly_dashboard/models/inventory/brand_model.dart';
-import 'package:feastly_dashboard/models/inventory/category_model.dart';
-import 'package:feastly_dashboard/models/inventory/sub_category_model.dart';
-import 'package:feastly_dashboard/models/inventory/unit_model.dart';
 
 import '../../api/api_service.dart';
 import '../../shared_services.dart';
 import '../../widgets/auth_failed.dart';
+import '../inventory/brand_model.dart';
+import '../inventory/category_model.dart';
+import '../inventory/sub_category_model.dart';
+import '../inventory/unit_model.dart';
 
-ItemMasterModel itemMasterModelFromJson(String str) => ItemMasterModel.fromJson(json.decode(str));
+CatererItemModel catererItemModelFromJson(String str) => CatererItemModel.fromJson(json.decode(str));
 
-String itemMasterModelToJson(ItemMasterModel data) => json.encode(data.toJson());
+String catererItemModelToJson(CatererItemModel data) => json.encode(data.toJson());
 
-class ItemMasterModel {
+class CatererItemModel {
+  String? catererCode;
   String? code;
   String? name;
   String? shortDesc;
@@ -40,7 +41,8 @@ class ItemMasterModel {
   String? createdUser;
   String? createdTime;
 
-  ItemMasterModel({
+  CatererItemModel({
+    this.catererCode,
     this.code,
     this.name,
     this.shortDesc,
@@ -62,7 +64,8 @@ class ItemMasterModel {
     this.createdTime,
   });
 
-  factory ItemMasterModel.fromJson(Map<String, dynamic> json) => ItemMasterModel(
+  factory CatererItemModel.fromJson(Map<String, dynamic> json) => CatererItemModel(
+    catererCode: json["caterer_code"],
     code: json["code"],
     name: json["name"],
     shortDesc: json["short_desc"],
@@ -79,12 +82,13 @@ class ItemMasterModel {
     mrp: json["mrp"].toString(),
     itemEnable: json["item_enable"],
     cookingTime: json["cooking_time"] ?? 0,
-    extraTime: json["extra_time"] ?? 0 ,
+    extraTime: json["extra_time"] ?? 0,
     createdUser: json["created_user"],
     createdTime: json["created_time"],
   );
 
   Map<String, dynamic> toJson() => {
+    "caterer_code": catererCode,
     "code": code,
     "name": name,
     "short_desc": shortDesc,
@@ -106,11 +110,42 @@ class ItemMasterModel {
     "created_time": createdTime,
   };
 
-  Future<Map<String, dynamic>?> getAllItems(model) async {
+  Future<Map<String, dynamic>?> getAllItemsByCaterer(catererCode) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).get('/inventory/listOfItems',
+      var data = await Dio(ApiService().options).get('/caterers/listOfItemsByCaterer',
+          queryParameters: {'caterer_code': catererCode},
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
+          }));
+
+      if (data.statusCode == 200) {
+        jsonResp = {'code': data.statusCode, 'data': data.data};
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        if(e.response!.statusCode == 401 || e.response!.statusCode == 403){
+          authFailedFunc(msg: e.response!.data['msg']);
+        }else {
+          jsonResp = {'code': e.response!.statusCode, 'data': e.response!.data};
+        }
+      } else {
+        jsonResp = {
+          'code': 500,
+          'data': {'msg': 'Something error try again'}
+        };
+      }
+    }
+    return jsonResp;
+  }
+
+  Future<Map<String, dynamic>?> getAllCaterersItems(model) async {
+    Map<String, dynamic>? jsonResp;
+    try {
+      var logData = await SharedServices.loginDetails();
+      var data = await Dio(ApiService().options).get('/caterers/listOfItemsByCatererCode',
           queryParameters: model,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
@@ -138,49 +173,17 @@ class ItemMasterModel {
   }
 
 
-  Future<Map<String, dynamic>?> searchItemByName(name) async {
+  Future<Map<String, dynamic>?> addItemByCaterer(model) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).get('/inventory/searchItemByName',
-          queryParameters: {'name':name},
-          options: Options(headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
-          }));
-
-      if (data.statusCode == 200) {
-        jsonResp = {'code': data.statusCode, 'data': data.data};
-      }
-    } on DioException catch (e) {
-      if (e.response != null) {
-        if(e.response!.statusCode == 401 || e.response!.statusCode == 403){
-          authFailedFunc(msg: e.response!.data['msg']);
-        }else {
-          jsonResp = {'code': e.response!.statusCode, 'data': e.response!.data};
-        }
-      } else {
-        jsonResp = {
-          'code': 500,
-          'data': {'msg': 'Something error try again'}
-        };
-      }
-    }
-    return jsonResp;
-  }
-
-
-
-  Future<Map<String, dynamic>?> addItem(model) async {
-    Map<String, dynamic>? jsonResp;
-    try {
-      var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).post('/inventory/addItem',
+      var data = await Dio(ApiService().options).post('/caterers/addItemByCaterer',
           data: model,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
           }));
+
       if (data.statusCode == 200) {
         jsonResp = {'code': data.statusCode, 'data': data.data};
       }
@@ -201,16 +204,17 @@ class ItemMasterModel {
     return jsonResp;
   }
 
-  Future<Map<String, dynamic>?> updateItem(model) async {
+  Future<Map<String, dynamic>?> updateItemByCaterer(model) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).post('/inventory/updateItem',
+      var data = await Dio(ApiService().options).post('/caterers/updateItemByCaterer',
           data: model,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
           }));
+
       if (data.statusCode == 200) {
         jsonResp = {'code': data.statusCode, 'data': data.data};
       }
@@ -230,14 +234,13 @@ class ItemMasterModel {
     }
     return jsonResp;
   }
-
 
   Future<Map<String, dynamic>?> uploadImage(model) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
       var formData = FormData.fromMap(model);
-      var data = await Dio(ApiService().options).post('/inventory/addItemImage',
+      var data = await Dio(ApiService().options).post('/caterers/addItemImage',
           data: formData,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
@@ -264,12 +267,12 @@ class ItemMasterModel {
   }
 
 
-  Future<Map<String, dynamic>?> listOfImagesByItemCode(itemCode) async {
+  Future<Map<String, dynamic>?> listOfImagesByItemCode(itemCode,catererCode) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).get('/inventory/listOfItemImageByItemCode',
-          queryParameters: {'item_code':itemCode},
+      var data = await Dio(ApiService().options).get('/caterers/listOfItemImageByItemCode',
+          queryParameters: {'item_code':itemCode,'caterer_code':catererCode},
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
@@ -298,7 +301,7 @@ class ItemMasterModel {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).delete('/inventory/deleteItemImageByItemCode',
+      var data = await Dio(ApiService().options).delete('/caterers/deleteItemImageByItemCode',
           data: model,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
@@ -323,7 +326,6 @@ class ItemMasterModel {
     }
     return jsonResp;
   }
-
 
 }
 

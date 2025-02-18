@@ -1,13 +1,13 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:feastly_dashboard/controller/caterer/caterer_item_controller.dart';
-import 'package:feastly_dashboard/models/caterer_item_model.dart';
+import 'package:feastly_dashboard/models/caterer/caterer_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/constants.dart';
-import '../../models/caterer_model.dart';
+import '../../models/caterer/caterer_model.dart';
 import '../../widgets/header_widget.dart';
 import '../../widgets/side_menu_items.dart';
 
@@ -284,8 +284,13 @@ class MyAsyncDataSource extends AsyncDataTableSource {
                   DataCell(
                       Center(child: IconButton(onPressed: (){
                         // alc.modifyItemDialog(model: e);
+                        alc.openImageDialog(itemCode: e.code, itemName: e.name, catererCode: e.catererCode);
+                      }, icon: Icon(Icons.visibility),tooltip: 'View Images',))),
+                  DataCell(
+                      Center(child: IconButton(onPressed: (){
+                        // alc.modifyItemDialog(model: e);
                         alc.updateOpenItemDialog(model: e);
-                      }, icon: Icon(Icons.edit)))),
+                      }, icon: Icon(Icons.edit),tooltip: 'Modify item',))),
 
                 ])).toList(),
       );

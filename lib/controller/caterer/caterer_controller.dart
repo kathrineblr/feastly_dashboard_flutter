@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:data_table_2/data_table_2.dart';
-import 'package:feastly_dashboard/models/caterer_item_model.dart';
-import 'package:feastly_dashboard/models/caterer_model.dart';
+import 'package:feastly_dashboard/models/caterer/caterer_item_model.dart';
+import 'package:feastly_dashboard/models/caterer/caterer_model.dart';
 import 'package:feastly_dashboard/models/inventory/item_master_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';

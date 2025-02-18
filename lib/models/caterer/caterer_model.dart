@@ -1,151 +1,69 @@
 // To parse this JSON data, do
 //
-//     final catererItemModel = catererItemModelFromJson(jsonString);
+//     final catererModel = catererModelFromJson(jsonString);
 
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import '../api/api_service.dart';
-import '../shared_services.dart';
-import '../widgets/auth_failed.dart';
-import 'inventory/brand_model.dart';
-import 'inventory/category_model.dart';
-import 'inventory/sub_category_model.dart';
-import 'inventory/unit_model.dart';
+import '../../api/api_service.dart';
+import '../../shared_services.dart';
+import '../../widgets/auth_failed.dart';
 
-CatererItemModel catererItemModelFromJson(String str) => CatererItemModel.fromJson(json.decode(str));
+CatererModel catererModelFromJson(String str) => CatererModel.fromJson(json.decode(str));
 
-String catererItemModelToJson(CatererItemModel data) => json.encode(data.toJson());
+String catererModelToJson(CatererModel data) => json.encode(data.toJson());
 
-class CatererItemModel {
-  String? catererCode;
+class CatererModel {
   String? code;
   String? name;
-  String? shortDesc;
-  String? desc;
-  CategoryModel? category;
-  SubCategoryModel? subCategory;
-  BrandModel? brand;
-  UnitModel? unit;
-  String? ratio;
-  String? ratioValue;
-  String? price;
-  String? ourPrice;
-  String? discount;
-  String? mrp;
-  bool? itemEnable;
-  double? cookingTime;
-  double? extraTime;
-  String? createdUser;
-  String? createdTime;
+  String? address;
+  String? shopImage;
+  String? ownerName;
+  String? ownerPhone;
+  String? createdAt;
+  String? createdBy;
 
-  CatererItemModel({
-    this.catererCode,
+  CatererModel({
     this.code,
     this.name,
-    this.shortDesc,
-    this.desc,
-    this.category,
-    this.subCategory,
-    this.brand,
-    this.unit,
-    this.ratioValue,
-    this.ratio,
-    this.price,
-    this.ourPrice,
-    this.discount,
-    this.mrp,
-    this.itemEnable,
-    this.cookingTime,
-    this.extraTime,
-    this.createdUser,
-    this.createdTime,
+    this.address,
+    this.shopImage,
+    this.ownerName,
+    this.ownerPhone,
+    this.createdAt,
+    this.createdBy,
   });
 
-  factory CatererItemModel.fromJson(Map<String, dynamic> json) => CatererItemModel(
-    catererCode: json["caterer_code"],
+  factory CatererModel.fromJson(Map<String, dynamic> json) => CatererModel(
     code: json["code"],
     name: json["name"],
-    shortDesc: json["short_desc"],
-    desc: json["desc"],
-    category: json["category"] == null ? null : CategoryModel.fromJson(json["category"]),
-    subCategory: json["sub_category"] == null ? null : SubCategoryModel.fromJson(json["sub_category"]),
-    brand: json["brand"] == null ? null : BrandModel.fromJson(json["brand"]),
-    unit: json["unit"] == null ? null : UnitModel.fromJson(json["unit"]),
-    ratio: json["ratio"].toString(),
-    ratioValue: json["ratio_value"] == null ? '0' : json["ratio_value"].toString(),
-    price: json["price"].toString(),
-    ourPrice: json["our_price"] == null ? '0' : json["our_price"].toString(),
-    discount: json["discount"].toString(),
-    mrp: json["mrp"].toString(),
-    itemEnable: json["item_enable"],
-    cookingTime: json["cooking_time"] ?? 0,
-    extraTime: json["extra_time"] ?? 0,
-    createdUser: json["created_user"],
-    createdTime: json["created_time"],
+    address: json["address"],
+    shopImage: json["shop_image"],
+    ownerName: json["owner_name"],
+    ownerPhone: json["owner_phone"],
+    createdAt: json["created_at"],
+    createdBy: json["created_by"],
   );
 
   Map<String, dynamic> toJson() => {
-    "caterer_code": catererCode,
     "code": code,
     "name": name,
-    "short_desc": shortDesc,
-    "desc": desc,
-    "category": category?.toJson(),
-    "sub_category": subCategory?.toJson(),
-    "brand": brand?.toJson(),
-    "unit": unit?.toJson(),
-    "ratio": ratio,
-    "ratio_value": ratioValue,
-    "price": price,
-    "our_price": ourPrice,
-    "discount": discount,
-    "mrp": mrp,
-    "item_enable": itemEnable,
-    "cooking_time": cookingTime,
-    "extra_time": extraTime,
-    "created_user": createdUser,
-    "created_time": createdTime,
+    "address": address,
+    "shop_image": shopImage,
+    "owner_name": ownerName,
+    "owner_phone": ownerPhone,
+    "created_at": createdAt,
+    "created_by": createdBy,
   };
 
-  Future<Map<String, dynamic>?> getAllItemsByCaterer(catererCode) async {
+  Future<Map<String, dynamic>?> listOfCaterer(model) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).get('/caterers/listOfItemsByCaterer',
-          queryParameters: {'caterer_code': catererCode},
-          options: Options(headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
-          }));
 
-      if (data.statusCode == 200) {
-        jsonResp = {'code': data.statusCode, 'data': data.data};
-      }
-    } on DioException catch (e) {
-      if (e.response != null) {
-        if(e.response!.statusCode == 401 || e.response!.statusCode == 403){
-          authFailedFunc(msg: e.response!.data['msg']);
-        }else {
-          jsonResp = {'code': e.response!.statusCode, 'data': e.response!.data};
-        }
-      } else {
-        jsonResp = {
-          'code': 500,
-          'data': {'msg': 'Something error try again'}
-        };
-      }
-    }
-    return jsonResp;
-  }
-
-  Future<Map<String, dynamic>?> getAllCaterersItems(model) async {
-    Map<String, dynamic>? jsonResp;
-    try {
-      var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).get('/caterers/listOfItemsByCatererCode',
+      var data = await Dio(ApiService().options).get('/caterers/allCaterers',
           queryParameters: model,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
@@ -172,13 +90,13 @@ class CatererItemModel {
     return jsonResp;
   }
 
-
-  Future<Map<String, dynamic>?> addItemByCaterer(model) async {
+  Future<Map<String, dynamic>?> listOfCatererBySearchName(name) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).post('/caterers/addItemByCaterer',
-          data: model,
+
+      var data = await Dio(ApiService().options).get('/caterers/searchCatererByName',
+          queryParameters: {"name": name},
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
@@ -204,11 +122,81 @@ class CatererItemModel {
     return jsonResp;
   }
 
-  Future<Map<String, dynamic>?> updateItemByCaterer(model) async {
+
+  Future<Map<String, dynamic>?> addCaterer(model) async {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
-      var data = await Dio(ApiService().options).post('/caterers/updateItemByCaterer',
+       model['created_by'] = logData!.userName;
+      var data = await Dio(ApiService().options).post('/caterers/registerCaterer',
+          data: model,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${logData.token}"
+          }));
+
+      if (data.statusCode == 200) {
+        jsonResp = {'code': data.statusCode, 'data': data.data};
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        if(e.response!.statusCode == 401 || e.response!.statusCode == 403){
+          authFailedFunc(msg: e.response!.data['msg']);
+        }else {
+          jsonResp = {'code': e.response!.statusCode, 'data': e.response!.data};
+        }
+      } else {
+        jsonResp = {
+          'code': 500,
+          'data': {'msg': 'Something error try again'}
+        };
+      }
+    }
+    return jsonResp;
+  }
+
+  Future<Map<String, dynamic>?> uploadCatererShopImage(model) async {
+    Map<String, dynamic>? jsonResp;
+    try {
+      var logData = await SharedServices.loginDetails();
+       var fromData = FormData.fromMap(model);
+      var data = await Dio(ApiService().options).post('/caterers/addShopImage',
+          // queryParameters: {
+          //   'name': model['name'],
+          //   'owner_phone': model['owner_phone'],
+          // },
+          data: fromData,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
+          }));
+
+      if (data.statusCode == 200) {
+        jsonResp = {'code': data.statusCode, 'data': data.data};
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        if(e.response!.statusCode == 401 || e.response!.statusCode == 403){
+          authFailedFunc(msg: e.response!.data['msg']);
+        }else {
+          jsonResp = {'code': e.response!.statusCode, 'data': e.response!.data};
+        }
+      } else {
+        jsonResp = {
+          'code': 500,
+          'data': {'msg': 'Something error try again'}
+        };
+      }
+    }
+    return jsonResp;
+  }
+
+  Future<Map<String, dynamic>?> updateCaterer(model) async {
+    Map<String, dynamic>? jsonResp;
+    try {
+      var logData = await SharedServices.loginDetails();
+
+      var data = await Dio(ApiService().options).post('/caterers/updateCaterer',
           data: model,
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
@@ -236,4 +224,3 @@ class CatererItemModel {
   }
 
 }
-

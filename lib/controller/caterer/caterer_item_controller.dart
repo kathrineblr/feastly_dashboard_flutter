@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:data_table_2/data_table_2.dart';
-import 'package:feastly_dashboard/models/caterer_item_model.dart';
-import 'package:feastly_dashboard/models/caterer_model.dart';
+import 'package:feastly_dashboard/models/caterer/caterer_item_image_model.dart';
+import 'package:feastly_dashboard/models/caterer/caterer_item_model.dart';
+import 'package:feastly_dashboard/models/caterer/caterer_model.dart';
+import 'package:feastly_dashboard/views/caterers/caterer_item_images_page.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:overlay_kit/overlay_kit.dart';
@@ -12,6 +17,8 @@ import '../../models/inventory/unit_model.dart';
 import '../../widgets/custom_snackbar.dart';
 import '../../widgets/header_widget.dart';
 import '../../widgets/loading_progress.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:http_parser/http_parser.dart';
 
 
 class CatererItemController extends GetxController{
@@ -57,6 +64,7 @@ class CatererItemController extends GetxController{
     DataColumn2(label: Text('MRP'), size: ColumnSize.M),
     DataColumn2(label: Text('Ratio'), size: ColumnSize.L),
     DataColumn2(label: Text('Enable'), size: ColumnSize.L),
+    DataColumn2(label: Text('Action'), size: ColumnSize.S),
     DataColumn2(label: Text('Action'), size: ColumnSize.S),
   ];
 
@@ -929,4 +937,87 @@ class CatererItemController extends GetxController{
     }
     return catererList;
     }
+
+  var loadingImages = false;
+  var itemImages = <CatererItemImagesModel>[];
+
+  openImageDialog({itemCode, itemName,catererCode}) {
+    Get.dialog(Dialog(
+      child: CatererItemImagesPage(itemCode: itemCode,itemName: itemName,catererCode: catererCode,),
+    ));
+  }
+
+  pickItemImages(itemCode,catererCode)async{
+    var result = await FilePicker.platform.pickFiles(allowedExtensions: ['jpg','jpeg','png'],type: FileType.custom,withData: true);
+    if(result != null){
+      uploadItemImage(itemCode, result.files.first.bytes!,catererCode);
+    }
+  }
+
+  getItemImages({required itemCode,required catererCode})async{
+    loadingImages = true;
+    update(['item_images']);
+    var data = await CatererItemModel().listOfImagesByItemCode(itemCode,catererCode);
+    if(data != null){
+      if(data['code'] == 200){
+        itemImages = (data['data'] as List).map((e) => CatererItemImagesModel.fromJson(e)).toList();
+      }
+    }
+    loadingImages = false;
+    update(['item_images']);
+  }
+
+  uploadItemImage(itemCode,Uint8List image,catererCode)async{
+    var model = {
+      'item_code': itemCode,
+      'caterer_code': catererCode,
+      'image': dio.MultipartFile.fromBytes(image,filename: 'image.png',contentType: MediaType('image','png'))
+    };
+    OverlayLoadingProgress.start(
+        barrierDismissible: true, widget: const CustomLoadingProgress());
+    var data = await CatererItemModel().uploadImage(model);
+    OverlayLoadingProgress.stop();
+    if(data != null){
+      if(data['code'] == 200){
+        customSnack(title: 'Success', type: 's', msg: '${data['data']['msg']}');
+        getItemImages(itemCode: itemCode, catererCode: catererCode);
+      }
+      else{
+        customSnack(title: 'Error', type: 'e', msg: '${data['data']['msg']}');
+      }
+    }
+  }
+
+  confirmImageDeletion({required itemCode,required imageCode,required catererCode})async{
+    Get.defaultDialog(
+        title: 'Confirm',
+        middleText: 'Are you sure you want to delete this image?',
+        textConfirm: 'Yes',
+        textCancel: 'No',
+        onConfirm: (){
+          Get.back();
+          deleteItemImages(itemCode: itemCode,imageCode: imageCode,catererCode: catererCode);
+        }
+    );
+  }
+
+  deleteItemImages({required itemCode,required imageCode,required catererCode})async{
+    var model = {
+      'item_code': itemCode,
+      'code': imageCode
+    };
+    OverlayLoadingProgress.start(
+        barrierDismissible: true, widget: const CustomLoadingProgress());
+    var data = await CatererItemModel().deleteImageByItemCode(model);
+    OverlayLoadingProgress.stop();
+    if(data != null){
+      if(data['code'] == 200){
+        customSnack(title: 'Success', type: 's', msg: '${data['data']['msg']}');
+        getItemImages(itemCode: itemCode, catererCode: catererCode);
+      }
+      else{
+        customSnack(title: 'Error', type: 'e', msg: '${data['data']['msg']}');
+      }
+    }
+  }
   }

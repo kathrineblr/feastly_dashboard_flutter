@@ -190,8 +190,13 @@ class MyAsyncDataSource extends AsyncDataTableSource {
                   DataCell(
                       Center(child: IconButton(onPressed: (){
                         // alc.modifyItemDialog(model: e);
+                        alc.openImageDialog(itemCode: e.code!,itemName: e.name!);
+                      }, icon: const Icon(Icons.visibility),tooltip: 'View Images',))),
+                  DataCell(
+                      Center(child: IconButton(onPressed: (){
+                        // alc.modifyItemDialog(model: e);
                         alc.updateOpenItemDialog(model: e);
-                      }, icon: Icon(Icons.edit)))),
+                      }, icon: Icon(Icons.edit),tooltip: 'Modify item',))),
 
                 ])).toList(),
       );
