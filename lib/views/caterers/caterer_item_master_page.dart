@@ -1,6 +1,7 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:feastly_dashboard/controller/caterer/caterer_item_controller.dart';
 import 'package:feastly_dashboard/models/caterer/caterer_item_model.dart';
+import 'package:feastly_dashboard/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -130,7 +131,12 @@ class CatererItemMasterPage extends StatelessWidget {
                               ),
                             ),
                             FilledButton.icon(onPressed: (){
-                              cic.addOpenItemDialog();
+                              if(cic.selectedCaterer.value != null) {
+                                cic.addOpenItemDialog();
+                              }
+                              else{
+                                customSnack(type: 'e',title: 'Error',msg: 'Select caterer to add item');
+                              }
                             }, label: Text('Add Item'),icon: Icon(Icons.add),)
                           ],
                         ),

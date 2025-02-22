@@ -68,6 +68,9 @@ class CatererController extends GetxController {
     update(['item_list']);
   }
 
+  var catererItemTxt = TextEditingController();
+  var catererItemFocus = FocusNode();
+
   addCatererDialog() {
     clearForm();
     Get.dialog(Dialog(
@@ -175,12 +178,15 @@ class CatererController extends GetxController {
                               'name': '${value.name}'
                             });
                             update(['item_list']);
+                            catererItemTxt.clear();
                           },
                           displayStringForOption: (option) => option.name!,
                           fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+                            catererItemTxt = controller;
+                            catererItemFocus = focusNode;
                             return TextField(
-                              controller: controller,
-                              focusNode: focusNode,
+                              controller: catererItemTxt,
+                              focusNode: catererItemFocus,
                               onEditingComplete: onEditingComplete,
                               decoration: const InputDecoration(
                                 hintText: 'Search Item',
@@ -428,6 +434,8 @@ class CatererController extends GetxController {
   }
 
 
+
+
   modifyCatererDialog({required CatererModel model}) async {
     nameTxt.text = model.name!;
     addressTxt.text = model.address!;
@@ -448,6 +456,8 @@ class CatererController extends GetxController {
       }
     }
     // listOfAddItems = ;
+
+
 
     Get.dialog(Dialog(
       child: Container(
@@ -545,6 +555,7 @@ class CatererController extends GetxController {
                             return searchItemByNameApi(textEditingValue.text);
                           },
                           onSelected: (value) {
+                            catererItemTxt.clear();
                             listOfAddItems.add({
                               'code': '${value.code}',
                               'name': '${value.name}'
@@ -553,10 +564,12 @@ class CatererController extends GetxController {
                           },
                           displayStringForOption: (option) => option.name!,
                           fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+                            catererItemTxt = controller;
+                            catererItemFocus = focusNode;
                             return TextField(
-                              controller: controller,
-                              focusNode: focusNode,
-                              onEditingComplete: onEditingComplete,
+                              controller: catererItemTxt,
+                              focusNode: catererItemFocus,
+                             onEditingComplete: onEditingComplete,
                               decoration: const InputDecoration(
                                 hintText: 'Search Item',
                                 // border: OutlineInputBorder(),
