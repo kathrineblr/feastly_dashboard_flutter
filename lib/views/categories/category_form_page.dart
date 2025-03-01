@@ -7,9 +7,9 @@ import '../../controller/inventory/category_controller.dart';
 
 
 class CategoryFormPage extends StatelessWidget {
-   CategoryFormPage({super.key});
+  CategoryFormPage({super.key});
 
-   final CategoryController cc = Get.put(CategoryController());
+  final CategoryController cc = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +17,17 @@ class CategoryFormPage extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-            flex:2,
+            flex: 2,
             child: Container(
-              margin:const EdgeInsets.symmetric(horizontal: 5.0,vertical: 5.0),
+              margin: const EdgeInsets.symmetric(
+                  horizontal: 5.0, vertical: 5.0),
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey)
               ),
               child: GetBuilder<CategoryController>(
                   id: 'cat_list',
                   builder: (con) {
-                    return DataTable2                                                                                                    (
+                    return DataTable2(
                         columnSpacing: 12,
                         horizontalMargin: 12,
                         minWidth: 800,
@@ -45,27 +46,33 @@ class CategoryFormPage extends StatelessWidget {
                         isHorizontalScrollBarVisible: true,
                         isVerticalScrollBarVisible: true,
                         columns: con.columList,
-                        rows: List.generate(con.categoryList.length, (index){
+                        rows: List.generate(con.categoryList.length, (index) {
                           var userData = con.categoryList[index];
                           return DataRow2(
-                              color: cc.selectedCategory?.name == userData.name  ? WidgetStatePropertyAll(Colors.grey.shade300) : null,
-                              onTap: (){
+                              color: cc.selectedCategory?.name == userData.name
+                                  ? WidgetStatePropertyAll(Colors.grey.shade300)
+                                  : null,
+                              onTap: () {
                                 cc.selectCategoryFunc(index);
                               },
                               cells: [
                                 DataCell(Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Text('${index+1}')],)),
-                                DataCell(Column(mainAxisAlignment: MainAxisAlignment.center,children: [Text('${userData.code}')],)),
-                                DataCell(Column(mainAxisAlignment: MainAxisAlignment.center,children: [Text('${userData.name}'),],)),
+                                  children: [Text('${index + 1}')],)),
+                                DataCell(Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [Text('${userData.code}')],)),
+                                DataCell(Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [Text('${userData.name}'),],)),
                               ]);
                         }));
                   }
               ),
             )),
-        Expanded(child:Container(
-          margin:const EdgeInsets.symmetric(horizontal: 5.0,vertical: 5.0),
-          padding:const EdgeInsets.symmetric(horizontal: 5.0,vertical: 5.0),
+        Expanded(child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
           decoration: BoxDecoration(
               border: Border.all(color: Colors.grey)
           ),
@@ -73,20 +80,60 @@ class CategoryFormPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0,vertical: 8.0),
-                child: Text('Category',style: Get.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700)),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 5.0, vertical: 8.0),
+                child: Text('Category',
+                    style: Get.textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w700)),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Category Name',style: Get.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 2.0,),
-                    TextField(
-                      controller: cc.categoryName,
-                      style: Get.textTheme.bodyMedium,
-                    )
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Category Name', style: Get.textTheme.titleSmall!
+                            .copyWith(fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 2.0,),
+                        TextField(
+                          controller: cc.categoryName,
+                          style: Get.textTheme.bodyMedium,
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Category Image', style: Get.textTheme.titleSmall!
+                            .copyWith(fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 2.0,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Obx(() {
+                              return Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey)
+                                ),
+                                child: cc.categoryImage.value == null ? const Center(
+                                    child: Icon(Icons.image)) : Image.memory(
+                                    cc.categoryImage.value!),
+                              );
+                            }),
+                            const SizedBox(width: 5.0,),
+                            IconButton(
+                              onPressed: () {
+                                cc.pickCategoryImage();
+                              },
+                              icon: const Icon(Icons.upload_file),
+                              tooltip: 'Browse image',)
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -96,12 +143,12 @@ class CategoryFormPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    FilledButton(onPressed: (){
+                    FilledButton(onPressed: () {
                       cc.clearFrom();
                     }, child: Text('Clear')),
                     const SizedBox(width: 10.0),
-                    FilledButton(onPressed: (){
-                      if(cc.enableUpdate.value){
+                    FilledButton(onPressed: () {
+                      if (cc.enableUpdate.value) {
                         cc.updateCategoryApi();
                       }
                       else {

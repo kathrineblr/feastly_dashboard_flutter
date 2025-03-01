@@ -18,23 +18,27 @@ String categoryModelToJson(CategoryModel data) => json.encode(data.toJson());
 class CategoryModel {
   String? code;
   String? name;
+  String? image;
   String? createdUser;
 
   CategoryModel({
     this.code,
     this.name,
+    this.image,
     this.createdUser,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
     code: json["code"],
     name: json["name"],
+    image: json["image"] ?? '',
     createdUser: json["created_user"],
   );
 
   Map<String, dynamic> toJson() => {
     "code": code,
     "name": name,
+    'image': image,
     "created_user": createdUser,
   };
 
@@ -72,8 +76,12 @@ class CategoryModel {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
+      var formData = FormData.fromMap(model);
       var data = await Dio(ApiService().options).post('/inventory/addCategory',
-          data: model,
+          data: formData,
+          queryParameters: {
+            'name': model['name'],
+          },
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
@@ -103,8 +111,12 @@ class CategoryModel {
     Map<String, dynamic>? jsonResp;
     try {
       var logData = await SharedServices.loginDetails();
+      var formData = FormData.fromMap(model);
       var data = await Dio(ApiService().options).post('/inventory/updateCategory',
-          data: model,
+          data: formData,
+          queryParameters: {
+            'code': model['code'],
+          },
           options: Options(headers: {
             HttpHeaders.contentTypeHeader: "application/json",
             HttpHeaders.authorizationHeader: "Bearer ${logData!.token}"
