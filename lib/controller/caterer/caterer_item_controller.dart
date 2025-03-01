@@ -51,6 +51,7 @@ class CatererItemController extends GetxController{
   var cookingTimeTxt = TextEditingController();
   var extraTimeTxt = TextEditingController();
   var enableItems = true.obs;
+  var isNonVeg = true.obs;
 
   var columList = const [
     DataColumn2(label: Text('SLNO.'), size: ColumnSize.S),
@@ -420,6 +421,18 @@ class CatererItemController extends GetxController{
                           child: Row(
                             children: [
                               Obx(() {
+                                return Checkbox(value: isNonVeg.value,
+                                    onChanged: (val) {
+                                      isNonVeg.value = val!;
+                                    },activeColor: Colors.redAccent);
+                              }),
+                              const Text('Non Veg')
+                            ],
+                          )),
+                      Padding(padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Obx(() {
                                 return Checkbox(value: enableItems.value,
                                     onChanged: (val) {
                                       enableItems.value = val!;
@@ -468,6 +481,7 @@ class CatererItemController extends GetxController{
     enableItems.value = model.itemEnable!;
     cookingTimeTxt.text = model.cookingTime.toString();
     extraTimeTxt.text = model.extraTime.toString();
+    isNonVeg.value = model.nonVeg!;
 
     Get.dialog(Dialog(
         child: Container(
@@ -722,6 +736,18 @@ class CatererItemController extends GetxController{
                           child: Row(
                             children: [
                               Obx(() {
+                                return Checkbox(value: isNonVeg.value,
+                                    onChanged: (val) {
+                                      isNonVeg.value = val!;
+                                    },activeColor: Colors.redAccent);
+                              }),
+                              const Text('Non Veg')
+                            ],
+                          )),
+                      Padding(padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Obx(() {
                                 return Checkbox(value: enableItems.value,
                                     onChanged: (val) {
                                       enableItems.value = val!;
@@ -820,6 +846,7 @@ class CatererItemController extends GetxController{
         "cooking_time": cookingTimeTxt.text.trim().isEmpty ? '0' : cookingTimeTxt.text.trim(),
         "extra_time": extraTimeTxt.text.trim().isEmpty ? '1' : extraTimeTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "non_veg": isNonVeg.value,
         "item_enable": enableItems.value,
       };
       var data = await CatererItemModel().addItemByCaterer(model);
@@ -906,6 +933,7 @@ class CatererItemController extends GetxController{
         "our_price": ourPriceTxt.text.trim().isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "non_veg": isNonVeg.value,
         "cooking_time": cookingTimeTxt.text.trim().isEmpty ? '0' : cookingTimeTxt.text.trim(),
         "extra_time": extraTimeTxt.text.trim().isEmpty ? '1' : extraTimeTxt.text.trim(),
         "item_enable": enableItems.value,

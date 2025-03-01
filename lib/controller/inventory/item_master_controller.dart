@@ -54,6 +54,7 @@ class ItemMasterController extends GetxController {
   var cookingTimeTxt = TextEditingController();
   var extraTimeTxt = TextEditingController();
   var enableItems = true.obs;
+  var isNonVeg = true.obs;
 
   var loadingImages = false;
   var itemImages = <ItemImagesModel>[];
@@ -110,6 +111,7 @@ class ItemMasterController extends GetxController {
     cookingTimeTxt.clear();
     extraTimeTxt.clear();
     enableItems.value = true;
+    isNonVeg.value = true;
   }
 
   listOfCategoryApi() async {
@@ -458,6 +460,18 @@ class ItemMasterController extends GetxController {
                           child: Row(
                             children: [
                               Obx(() {
+                                return Checkbox(value: isNonVeg.value,
+                                    onChanged: (val) {
+                                      isNonVeg.value = val!;
+                                    },activeColor: Colors.redAccent);
+                              }),
+                              const Text('Non Veg')
+                            ],
+                          )),
+                      Padding(padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Obx(() {
                                 return Checkbox(value: enableItems.value,
                                     onChanged: (val) {
                                       enableItems.value = val!;
@@ -507,6 +521,7 @@ class ItemMasterController extends GetxController {
     enableItems.value = model.itemEnable!;
     cookingTimeTxt.text = model.cookingTime.toString();
     extraTimeTxt.text = model.extraTime.toString();
+    isNonVeg.value = model.nonVeg!;
 
     Get.dialog(Dialog(
         child: Container(
@@ -781,6 +796,18 @@ class ItemMasterController extends GetxController {
                           child: Row(
                             children: [
                               Obx(() {
+                                return Checkbox(value: isNonVeg.value,
+                                    onChanged: (val) {
+                                      isNonVeg.value = val!;
+                                    },activeColor: Colors.redAccent);
+                              }),
+                              const Text('Non Veg')
+                            ],
+                          )),
+                      Padding(padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Obx(() {
                                 return Checkbox(value: enableItems.value,
                                     onChanged: (val) {
                                       enableItems.value = val!;
@@ -877,6 +904,7 @@ class ItemMasterController extends GetxController {
             .isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "non_veg": isNonVeg.value,
         "cooking_time": cookingTimeTxt.text
             .trim()
             .isEmpty ? '0' : cookingTimeTxt.text.trim(),
@@ -974,6 +1002,7 @@ class ItemMasterController extends GetxController {
             .isEmpty ? '0' : ourPriceTxt.text.trim(),
         "discount": discountTxt.text.trim(),
         "mrp": mrpTxt.text.trim(),
+        "non_veg": isNonVeg.value,
         "cooking_time": cookingTimeTxt.text
             .trim()
             .isEmpty ? '0' : cookingTimeTxt.text.trim(),

@@ -35,6 +35,7 @@ class CatererItemModel {
   String? ourPrice;
   String? discount;
   String? mrp;
+  bool? nonVeg;
   bool? itemEnable;
   double? cookingTime;
   double? extraTime;
@@ -57,6 +58,7 @@ class CatererItemModel {
     this.ourPrice,
     this.discount,
     this.mrp,
+    this.nonVeg,
     this.itemEnable,
     this.cookingTime,
     this.extraTime,
@@ -80,6 +82,7 @@ class CatererItemModel {
     ourPrice: json["our_price"] == null ? '0' : json["our_price"].toString(),
     discount: json["discount"].toString(),
     mrp: json["mrp"].toString(),
+    nonVeg:json['non_veg'] ?? false,
     itemEnable: json["item_enable"],
     cookingTime: json["cooking_time"] ?? 0,
     extraTime: json["extra_time"] ?? 0,
@@ -103,6 +106,7 @@ class CatererItemModel {
     "our_price": ourPrice,
     "discount": discount,
     "mrp": mrp,
+    "non_veg":nonVeg,
     "item_enable": itemEnable,
     "cooking_time": cookingTime,
     "extra_time": extraTime,
