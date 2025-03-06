@@ -502,12 +502,12 @@ class ItemMasterController extends GetxController {
         )));
   }
 
-  updateOpenItemDialog({required ItemMasterModel model}) {
+  updateOpenItemDialog({required ItemMasterModel model})async {
     itemNameTxt.text = model.name!;
     shortDescTxt.text = model.shortDesc!;
     longDescTxt.text = model.desc!;
     selectedCategory.value = model.category?.code;
-    listOfSubCategoryApi(
+   await listOfSubCategoryApi(
         fromUpdate: true, subCategoryCode: model.subCategory?.code);
     // selectedSubCategory.value = model.subCategory?.code;
     selectedUnit.value = model.unit?.code;
@@ -822,8 +822,8 @@ class ItemMasterController extends GetxController {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             ElevatedButton(onPressed: () {
-                              clearForm();
-                            }, child: Text('Clear')),
+                              Get.back();
+                            }, child: Text('Close')),
                             SizedBox(width: 10.0),
                             ElevatedButton(onPressed: () {
                               updateItemApi(model.code);

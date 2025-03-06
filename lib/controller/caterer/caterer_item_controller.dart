@@ -762,8 +762,8 @@ class CatererItemController extends GetxController{
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             ElevatedButton(onPressed: () {
-                              clearForm();
-                            }, child: Text('Clear')),
+                              Get.back();
+                            }, child: Text('Close')),
                             SizedBox(width: 10.0),
                             ElevatedButton(onPressed: () {
                               updateItemApi(model.code);
